@@ -92,3 +92,31 @@ L5（Tranel 2022、**全文確認済み**）は本研究の貢献Bに最も近�
 - **副産物として、L5経由でL13（de Kruijff et al. 2019, ²¹³Bi保持率≥69%）という実測アンカー値を得た。** これはPhase 3bのパラメータ範囲設定（§6）の妥当性を補強する。
 
 **全体として、暫定検索でL2・L5を全文確認したことは、本研究計画の根幹（コア＝貢献B、拡張①＝貢献Aの絞り込み）を弱めるどころか、より精密な根拠を与える結果となった。** 残る文献（特にL1, L3, L4, L8–L10）の全文確認が、正式なPhase 0における次の優先課題である。
+
+---
+
+## 5. 全文取得依頼リスト（未確認文献、優先度順）
+
+2026-09-22 時点で全文未確認の12件。ユーザーがPDFを取得次第、Read で読み込み本表・研究計画書を更新する。
+
+### 最優先
+- **L1**：Koniar H, Miller C, Rahmim A, Schaffer P, Uribe C. A GATE simulation study for dosimetry in cancer cell and micrometastasis from the ²²⁵Ac decay chain. *EJNMMI Phys*. 2023;10:47. doi:10.1186/s40658-023-00564-5
+
+### 優先
+- **L3**：Ghaseminejad S, De Sarno D, Bauman G, Lee TY. Framework to calculate ²²⁵Ac, ¹⁷⁷Lu, and ¹⁶¹Tb radiation dose and biological effect in metastatic castration-resistant prostate cancer treatment. *Med Phys*. 2025;52(8). doi:10.1002/mp.18035
+- **L4**：Yan K, Jiang Y, Wang R, et al. A fast convolution-based method for microdosimetric comparison of ²²⁵Ac, ²¹¹At, ¹⁷⁷Lu and ¹⁶¹Tb at the cell cluster scale. *Phys Med Biol*. 2025. doi:10.1088/1361-6560/ae7892
+- **L9**：[TUM/Helmholtz Munich] [²²⁵Ac]Ac-PSMA I&T: A Preclinical Investigation on the Fate of Decay Nuclides and Their Influence on Dosimetry of Salivary Glands and Kidneys. *J Nucl Med*. 2025 (early view). PubMed 41043997
+- **L10**：Rumiantcev M, Li WB, Lindner S, et al. Estimation of relative biological effectiveness of ²²⁵Ac compared to ¹⁷⁷Lu during [²²⁵Ac]Ac-PSMA and [¹⁷⁷Lu]Lu-PSMA radiopharmaceutical therapy using TOPAS/TOPAS-nBio/MEDRAS. *EJNMMI Phys*. 2023;10:56. doi:10.1186/s40658-023-00567-2
+
+### 中優先
+- **L6**：Tranel J, Feng FY, James SS, Hope TA. Effect of microdistribution of alpha and beta-emitters in targeted radionuclide therapies on delivered absorbed dose in a GATE model of bone marrow. *Phys Med Biol*. 2021;66(3):035016. doi:10.1088/1361-6560/abd3ef
+- **L8**：Unterrainer LM, et al. Image-based dosimetry for [²²⁵Ac]Ac-PSMA-I&T therapy and the effect of daughter-specific pharmacokinetics. *Eur J Nucl Med Mol Imaging*. 2024. doi:10.1007/s00259-024-06681-2
+- **L12**：Peter R, Bidkar AP, Bobba KN, et al. 3D small-scale dosimetry and tumor control of ²²⁵Ac radiopharmaceuticals for prostate cancer. *Sci Rep*. 2024;14. doi:10.1038/s41598-024-70417-3
+
+### 低優先
+- **L7**：Delker A, Schleske M, Liubchenko G, et al. Biodistribution and dosimetry for combined [¹⁷⁷Lu]Lu-PSMA-I&T/[²²⁵Ac]Ac-PSMA-I&T therapy using multi-isotope quantitative SPECT imaging. *Eur J Nucl Med Mol Imaging*. 2023;50(5):1280–1290. doi:10.1007/s00259-022-06092-1
+- **L11**：[著者未確認] Computational Pathology and Spatial Microdosimetry Guide Radiopharmaceutical Selection for TROP2-Targeted Alpha versus Beta Radionuclide Drug Conjugates (RDCs). *bioRxiv*. 2026年8月（プレプリント）。doi:10.64898/2026.08.19.745876v1
+- **L13**：de Kruijff RM, Raavé R, Kip A, et al. The in vivo fate of ²²⁵Ac daughter nuclides using polymersomes as a model carrier. *Sci Rep*. 2019;9:1–13.（現在はTranel 2022経由の孫引き）
+
+### 未発見（要追加検索）
+- [P6] ²²⁵Ac 崩壊連鎖の核データ評価に関する専用文献：該当論文を未特定。ICRP Publication 107 が現状の代替根拠。
