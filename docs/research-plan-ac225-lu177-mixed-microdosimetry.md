@@ -80,6 +80,8 @@
 3. **2 核種の空間分布の独立性**：同一標的（例：PSMA）を狙う薬剤であっても、キレート・比放射能・投与時期・受容体飽和・線量率依存的な受容体発現変化により、²²⁵Ac 由来分布と ¹⁷⁷Lu 由来分布は一般に一致しない。
 4. **生物学的効果の非加算性**：物理線量は加算できるが、放射線質（LET）が異なる 2 成分の生物学的効果は単純加算できない。
 
+**この4点は理論的推測ではなく、実際に文献で確認されたスケール依存性によっても裏付けられる**（`docs/phase0-literature-extraction.md`）。Liubchenko et al. 2024（臓器/voxelスケール、患者SPECT）は、²²¹Frと²¹³Biの薬物動態を厳密に分離しても腎臓線量の推定値は単一光子ピークを代用した場合と比べて最大8%しか変わらないと報告している。一方 Koniar et al. 2023（細胞スケール、GATE Monte Carlo）は、同じ²²¹Fr・²¹³Biの保持率を単一細胞の自己線量S値レベルで変化させると、最大72%もの差が生じることを示している。**同じ物理現象（娘核種再分布）が、評価スケールによって「ほぼ無視できる」から「支配的」まで結論が逆転する**——これは本研究がマクロな臨床線量評価だけでなく微視的スケールでの評価を必要とする理由を、既存の一次データで直接裏付けるものである。
+
 ---
 
 ## 2. 先行研究の到達点と研究ギャップ
@@ -146,6 +148,14 @@
 - **L13（de Kruijff et al. 2019, Sci Rep）**：Phase 3b の `η_Bi` 探索範囲の実測アンカーを、単一の孫引き値（≥69%）から、担体サイズ・時点別の精密なレンジ（腫瘍内²¹³Bi保持比 0.58–0.91）に格上げした（§6 Phase 3b）。
 - **L11（Chi 2026, bioRxiv プレプリント）**：全文確認の結果、評価を大幅に下方修正した。査読前・単著（RDC開発企業所属）で、線量計算もGaussianカーネル近似にとどまりMonte Carlo輸送を行っていない。ただし、この論文が²²⁵Acと¹⁷⁷Luの線量を**常に同一の抗原密度マップから計算しており、`c=1`（完全共局在）を検証なしに暗黙の前提としている**ことは、本研究が§2.1で指摘した「暗黙の仮定②」を2026年時点の実例で示す好例であり、状況証拠としてではなく問題の具体例として引用する。
 
+**追記3（2026年9月、L1・L6・L8・L9・L10を追加で全文確認、計10/13件確認済み）**：
+
+- **L1（Koniar et al. 2023, EJNMMI Physics）**：**貢献A（拡張①）の新規性をさらに一段狭める重要な発見**。²²¹Fr/²¹³Biの保持率を0–100%で20%刻みにスイープし、単一細胞スケールの自己線量S値への影響（²²¹Fr保持率0%で最大72%減少、²¹³Bi保持率0%で最大21%減少）を既に定量化していた。本研究の`η_i`連続変数化構想とほぼ同一の発想であり、拡張①の新規性は「η_iの空間的再分配モデルへの拡張（遊離核種の線量を`p_i^free(r)`という独立分布へ明示的に配分し、Koniarの"線量消失"モデルとの違いを出す）」および「混合場（Ac+Lu併用）文脈でのη_i感度評価」にさらに絞り込む（`docs/phase0-literature-extraction.md` L1参照）。
+- **L8（Liubchenko et al. 2024, EJNMMI）とL1の対比**：臓器スケールでは娘核種別PKの厳密な分離による線量推定への影響はわずか8%（L8）にとどまる一方、細胞スケールでは²²¹Fr保持率の効果だけで最大72%に達する（L1）。**このスケール依存性は、本研究の核心的動機を直接裏付ける一次証拠であり、§1.3に採用する。**
+- **L9（Wurzer et al. 2025, J Nucl Med）**：マウス前臨床データで、娘核種の非平衡蓄積が腎臓線量を1.21–1.40倍、唾液腺線量を1.5–2.5倍増加させることを定量化。拡張①の`η_i`パラメータ範囲設定に有用な追加の実測アンカー。
+- **L10（Rumiantcev et al. 2023, EJNMMI Physics）**：**²²⁵AcのDSB数-線量関係が本論文では線形（線形二次ではない）としてフィットされている**（`a_Ac ≈ 0`）。これは本計画書§5.6のLQ交差項`2√(β_Ac β_Lu)D_Ac D_Lu`の前提（`β_Ac>0`）と整合しない可能性があり、**§5.6の定式化を修正する必要がある**（下記§5.6追記を参照）。
+- **L6（Tranel et al. 2021, Phys Med Biol）**：IOPscience経由では取得できなかったが、NIHMS/PMC著者最終稿という別ルートで全文確認できた。貢献Bとの差別化（常に単一核種のみの評価）を裏付ける。
+
 ### 2.4 明示的に主張しないこと（査読リスク管理）
 
 以下は本研究の新規性として**主張しない**。
@@ -201,7 +211,7 @@
 | # | 貢献 | 内容 | なぜ新規か | トラック |
 |---|---|---|---|---|
 | B | **共局在度を明示変数化** | 混合場を `f`（放射能比）と `c`（空間相関）の 2 変数関数として定式化し、`D(r; f, c)` の位相図を得る | 既存研究は `f` を変数とするが、`c` は暗黙に 1（完全共局在）または固定。**最も近い先行研究（Tranel et al. 2022, EJNMMI Physics）は、²²⁵Acと¹⁷⁷Luのどちらを使うべきかを腫瘍微細構造の空間分離度の関数として比較しているが、両核種を同時投与し`f`と`c`を独立変数として扱う設計ではない**。この差別化を前提に、`c`を連続変数として扱う一般式と感度解析は未確立と判断する | **コア** |
-| A | **保持率 `η_i` の連続変数化による実効カーネルの適用限界の検証** | ²²⁵Ac 崩壊連鎖を親核種一括ではなく 7 核種（²²⁵Ac, ²²¹Fr, ²¹⁷At, ²¹³Bi, ²¹³Po, ²⁰⁹Tl, ²⁰⁹Pb）に分解し、各核種の保持率 `η_i ∈ [0,1]` を連続変数として、束縛分布と遊離分布の線形補間でモデル化する | **核種分解カーネル自体は、暫定文献検索（`docs/phase0-literature-extraction.md`）により、Koniar et al. 2023・Hu et al. 2025 で既に細胞・track structureスケールで実施済みと判明した**。したがって本貢献は「8核種モデルを作る」ことではなく、(i) 臓器スケールで既に実測されている娘核種再分布データ（Unterrainer et al. 2024 等）を`η_i`という連続パラメータとして微視的スケールに接続すること、(ii) `η_i`に対する線量勾配 `∂D/∂η_i` を評価し実効カーネル近似の誤差を定量化することに、新規性を絞り込む | 拡張① |
+| A | **`η_i` の空間的再分配モデルへの拡張、および混合場文脈での感度評価** | ²²⁵Ac 崩壊連鎖を親核種一括ではなく 7 核種（²²⁵Ac, ²²¹Fr, ²¹⁷At, ²¹³Bi, ²¹³Po, ²⁰⁹Tl, ²⁰⁹Pb）に分解し、各核種の保持率 `η_i ∈ [0,1]` を連続変数として、束縛分布 `p_parent(r)` と**独立分布**`p_i^free(r)`の線形補間でモデル化する（線量保存則あり） | **核種分解カーネル自体、および保持率を0–100%でスイープする感度解析自体は、Koniar et al. 2023（単一細胞スケール、20%刻み）・Hu et al. 2025（細胞核、6離散幾何配置）で既に実施済みと判明した（`docs/phase0-literature-extraction.md` L1, L2）。** したがって本貢献はさらに絞り込んで、(i) 遊離核種の線量を「消失」ではなく独立分布`p_i^free(r)`へ**明示的に空間再分配**すること（先行研究は遊離分の線量を系から除くのみで行き先をモデル化しない）、(ii) 臓器スケールで既に実測されている再分布データ（Unterrainer/Liubchenko et al. 2024, Wurzer et al. 2025 等）を`η_i`として微視的スケールに接続すること、(iii) `η_i`が**混合場（²²⁵Ac+¹⁷⁷Lu併用）の最適`f`・`c`設計に与える影響**を評価すること（先行研究はいずれも²²⁵Ac単核種の解析）に新規性を絞り込む | 拡張① |
 | C | **時間構造の統合** | `f(t)` および線量率の時間発展を LQ/MKM に接続し、投与順序・間隔を設計変数として扱う | 既存の混合比検討は時間積分後の比を扱う。半減期差に起因する `f(t)` の効果は定量化されていない | 拡張② |
 | D | **混合場 UQ（4 因子統合）** | 4 因子の不確かさを共通の枠組みで伝播させ、分散寄与を分解（感度指標の算出） | 単核種 dosimetry の UQ ガイダンスは存在するが、混合場・微視的スケールへの拡張は未整備 | 拡張③ |
 | E | **再現可能な公開実装** | 検証済みカーネルライブラリ（HDF5）と畳み込み・UQ コードを公開 | 領域内でカーネルの生成条件（分解能・カットオフ・規格化）が非統一であり、比較可能性が低い | コア（v1.0）＋拡張（順次更新） |
@@ -324,6 +334,8 @@ E_{\mathrm{mix}} \neq E\big(D_{\mathrm{Ac}} + D_{\mathrm{Lu}}\big)
 $$
 
 であり、**物理線量の線形性と生物学的効果の非線形性を分離して扱う**ことが本研究の設計方針である。α線成分については微視的線量分布（specific energy `z` の単一事象分布 `f_1(z)`）に基づく MKM 的取り扱いを併用し、低線量域での効果の飽和・確率性を考慮する。
+
+**追記（Rumiantcev et al. 2023 の全文確認を受けて）**：同論文は TOPAS/TOPAS-nBio/MEDRAS による track-structure シミュレーションで、¹⁷⁷Lu の DSB数-線量関係を線形二次（LQ）、**²²⁵Ac のそれを線形（`a_Ac ≈ 0`、すなわち`β_Ac`に相当する項が実質ゼロ）としてフィットしている**（`docs/phase0-literature-extraction.md` L10）。これは高LET放射線の線量反応関係が低〜中線量域で飽和的・線形に近づくという放射線生物学の一般的知見と整合する。この知見を踏まえると、上式の交差項`2√(β_Ac β_Lu)D_Ac D_Lu`は`β_Ac→0`の極限でほぼ消失する可能性があり、**本研究のPhase 5（拡張②）では、(i) `β_Ac`を固定値とせず文献値レンジ内で不確かさとして扱う、(ii) `β_Ac≈0`とする単純化モデルとの比較を行い交差項の寄与を定量化する、という2案を検討する**。いずれにせよ、交差項の大きさそのものが実証的に未確定であるという点は、本研究のH4検証における重要な留保事項として明記する。
 
 ### 5.7 評価指標
 
@@ -549,7 +561,7 @@ $$
 | # | リスク | 影響 | 対策・代替案 |
 |---|---|---|---|
 | R1 | Phase 0 で貢献 B（コア）が既に満たされている先行研究が発見される | コアの新規性喪失 | コアの重心を移す：(a) 独立再現検証＋コード間比較として位置づけ直す、(b) `c` の実測対応量（Manders係数・`ρ`）との接続を前面に出す、(c) 貢献 A（拡張①）を前倒しでコアに組み込む。**Phase 0 を最初に置き、この判断を2年目Q4より前に行う設計としている。**<br>**暫定検索結果（2026年9月、Tranel et al. 2022を全文確認）**：貢献Bに最も近い先行研究を全文精読し、「CAF and tumors were not considered as sources at the same time」という明記により、2核種同時投与・`f`と`c`を独立変数化という設計とは根本的に異なることを確定した（`docs/phase0-literature-extraction.md` L5）。**R1はこの2件について解消**。ただし他の未読文献（L1, L3, L4, L8–L12等）については引き続き正式Phase 0での確認が必要 |
-| R1' | Phase 0 で貢献 A（拡張）が既に満たされている先行研究が発見される | 拡張①の新規性喪失（コアには影響しない） | 拡張①を貢献 C（時間構造、拡張②）または D（UQ、拡張③）に差し替える。コアは貢献 B のみに立脚しているため学位論文の根幹は揺るがない<br>**暫定検索結果（Hu et al. 2025、Ghaseminejad et al. 2025を全文確認）**：**R1'は部分的に顕在化した**。核種分解カーネル自体（Koniar et al. 2023; Hu et al. 2025）は既に存在するため、貢献Aの主張を「8核種モデルの提案」から「保持率`η_i`の連続変数化」に狭めた（§4）。**全文確認により、Hu et al. 2025の「6分布」が離散的幾何カテゴリ（核/細胞質/全細胞/細胞外/内外両方/膜結合）であり連続的な保持率パラメータではないことを確定した**ため、この絞り込み後の貢献Aは新規性を保っていると判断する。**さらにGhaseminejad et al. 2025（L3）を全文確認したところ、²²⁵Ac連鎖を単一の実効カーネル（Whole Chain DPK）として扱っており核種分解自体を行っていないことが判明し、Phase 1コア（実効カーネル）／拡張①（核種分解）という本計画の段階分けが実際の文献の手法分布と自然に対応していることが確認できた**。当初計画の想定内の事象であり、対応済み |
+| R1' | Phase 0 で貢献 A（拡張）が既に満たされている先行研究が発見される | 拡張①の新規性喪失（コアには影響しない） | 拡張①を貢献 C（時間構造、拡張②）または D（UQ、拡張③）に差し替える。コアは貢献 B のみに立脚しているため学位論文の根幹は揺るがない<br>**暫定検索結果（Hu et al. 2025、Ghaseminejad et al. 2025を全文確認）**：**R1'は部分的に顕在化した**。核種分解カーネル自体（Koniar et al. 2023; Hu et al. 2025）は既に存在するため、貢献Aの主張を「8核種モデルの提案」から「保持率`η_i`の連続変数化」に狭めた（§4）。**全文確認により、Hu et al. 2025の「6分布」が離散的幾何カテゴリ（核/細胞質/全細胞/細胞外/内外両方/膜結合）であり連続的な保持率パラメータではないことを確定した**ため、この絞り込み後の貢献Aは新規性を保っていると判断する。**さらにGhaseminejad et al. 2025（L3）を全文確認したところ、²²⁵Ac連鎖を単一の実効カーネル（Whole Chain DPK）として扱っており核種分解自体を行っていないことが判明し、Phase 1コア（実効カーネル）／拡張①（核種分解）という本計画の段階分けが実際の文献の手法分布と自然に対応していることが確認できた**。**さらにKoniar et al. 2023（L1）の全文確認により、保持率η_iの0–100%スイープ自体が単一細胞スケールで既に実施済みであることが判明し、拡張①の新規性を「η_iの空間的再分配モデルへの拡張、および混合場文脈での感度評価」にさらに一段絞り込んだ（§4）**。当初計画の想定内の事象（R1想定の縮小版）であり、対応済み——**ただし拡張①の残された新規性の幅は当初よりもかなり狭く、Phase 6での位置づけ（拡張、コアではない）が一層妥当であることが確認された** |
 | R2 | 娘核種保持率 `η_i` の実測データが乏しい | 拡張①のパラメータ設定の根拠不足 | `η_i` を推定せず**感度解析パラメータとして扱う**。「どの `η` 範囲で結論が変わるか」を出力とする（これ自体が有用な成果） |
 | R3 | 計算コストが過大（特に Phase 1 拡張①の8核種生成、Phase 3b の η サンプリング） | 拡張の実行不能 | **コア（Phase 1–3a）は当初からこのリスクを避ける設計**：Phase 1 コアは2核種のみ生成（一度きりの束縛されたMCコスト）、Phase 3a の `f×c` 探索はカーネルの再畳み込み（FFT、GPU、1ケース秒〜分）のみで新規MCを要さない。**組み合わせ爆発が生じ得るのは拡張①（8核種×複数分解能×複数カットオフの検証マトリクス）と拡張②③のみ**であり、これらは打ち切り可能な設計にしてある（§6 Phase 3b・4 の着手条件）。マルチスケール畳み込み・GPU活用・観測体積縮小は拡張側の追加対策として実施 |
 | R4 | 公表カーネル値との不一致（V2 不合格） | 検証失敗 | 条件差（媒質、核データ版、カット値、規格化）を系統的に切り分ける比較マトリクスを事前設計。不一致自体を報告価値ある知見として扱う |
@@ -615,11 +627,11 @@ $$
 
 以下は §2.1 のプレースホルダ [P1]–[P6] に対応する文献を、暫定的な WebSearch ベースの文献検索（`docs/phase0-literature-extraction.md`、実施日2026年9月）で確認した結果である。**WebFetch（全文取得）が本セッションの環境制約でブロックされていたため、書誌情報・内容は抄録レベルの要約に基づく。正式引用の前に全文で書誌情報・数値を再確認すること。**
 
-- [L1]（旧P1相当）Koniar H, Miller C, Rahmim A, Schaffer P, Uribe C. A GATE simulation study for dosimetry in cancer cell and micrometastasis from the ²²⁵Ac decay chain. *EJNMMI Phys*. 2023;10:47. doi:10.1186/s40658-023-00564-5
+- [L1]（旧P1相当、**全文確認済み**）Koniar H, Miller C, Rahmim A, Schaffer P, Uribe C. A GATE simulation study for dosimetry in cancer cell and micrometastasis from the ²²⁵Ac decay chain. *EJNMMI Phys*. 2023;10:46. doi:10.1186/s40658-023-00564-5 — ²²¹Fr/²¹³Bi保持率0–100%スイープを既に実施、貢献A(拡張①)の新規性をさらに絞り込む契機となった
 - [L7]（旧P2相当）Delker A, Schleske M, Liubchenko G, et al. Biodistribution and dosimetry for combined [¹⁷⁷Lu]Lu-PSMA-I&T/[²²⁵Ac]Ac-PSMA-I&T therapy using multi-isotope quantitative SPECT imaging. *Eur J Nucl Med Mol Imaging*. 2023;50(5):1280–1290. doi:10.1007/s00259-022-06092-1
 - [L3]（旧P3相当、**全文確認済み**）Ghaseminejad S, De Sarno D, Bauman G, Lee TY. Framework to calculate ²²⁵Ac, ¹⁷⁷Lu, and ¹⁶¹Tb radiation dose and biological effect in metastatic castration-resistant prostate cancer treatment. *Med Phys*. 2025;52(8):e18035. doi:10.1002/mp.18035 — ²²⁵Ac連鎖を単一の実効カーネル（Whole Chain DPK）として扱うことを確認、貢献Aの段階分け設計を補強
 - [L5]（旧P4相当・ただし内容は「混合比変化」ではなく「空間分離度変化」、**全文確認済み**）Tranel J, Palm S, Graves SA, Feng FY, Hope TA. Impact of radiopharmaceutical therapy (¹⁷⁷Lu, ²²⁵Ac) microdistribution in a cancer-associated fibroblasts model. *EJNMMI Phys*. 2022;9:67. doi:10.1186/s40658-022-00497-5
-- [L8][L9]（旧P5相当）Unterrainer LM, et al. Image-based dosimetry for [²²⁵Ac]Ac-PSMA-I&T therapy and the effect of daughter-specific pharmacokinetics. *Eur J Nucl Med Mol Imaging*. 2024. doi:10.1007/s00259-024-06681-2／[著者未確認] [²²⁵Ac]Ac-PSMA I&T: A Preclinical Investigation on the Fate of Decay Nuclides and Their Influence on Dosimetry of Salivary Glands and Kidneys. *J Nucl Med*. 2025 (early view). PubMed 41043997
+- [L8][L9]（旧P5相当、**全文確認済み**）Liubchenko G, Böning G, Zacherl M, Rumiantcev M, Unterrainer LM, Gildehaus FJ, Brendel M, Resch S, Bartenstein P, Ziegler SI, Delker A. Image-based dosimetry for [²²⁵Ac]Ac-PSMA-I&T therapy and the effect of daughter-specific pharmacokinetics. *Eur J Nucl Med Mol Imaging*. 2024;51:2504–2514. doi:10.1007/s00259-024-06681-2 — 臓器スケールでは娘核種別PKの厳密分離による線量差は8%以内（L1の細胞スケール最大72%との対比が本研究の核心的動機を裏付ける）／Wurzer A, Sun B, Saleh S, et al. [²²⁵Ac]Ac-PSMA I&T: A Preclinical Investigation on the Fate of Decay Nuclides and Their Influence on Dosimetry of Salivary Glands and Kidneys. *J Nucl Med*. 2025;66(12):1964–1969. doi:10.2967/jnumed.125.269744
 - [P6]（旧P6、該当なし）²²⁵Ac 崩壊連鎖の核データ評価に関する研究：**今回の暫定検索では該当論文を確認できていない**。ICRP Publication 107 を当面の基盤文献とし、Phase 0 正式実施時に追加検索する
 
 **追加で確認された、当初プレースホルダに無かった重要文献**（詳細は抽出表参照）：
@@ -627,7 +639,8 @@ $$
 - [L2]（**全文確認済み**）Hu Z, Qu S, Liu H, Zhang Y, Yan S, Hu A, Qiu R, Wu Z, Zhang H, Li J. Evaluation of relative biological effectiveness of ²²⁵Ac and its decay daughters with Monte Carlo track structure simulations. *EJNMMI Phys*. 2025;12:65. doi:10.1186/s40658-025-00765-0 — 貢献Aの新規性の幅を直接左右する最重要文献。6空間分布は離散カテゴリと確定（詳細は抽出表）
 - [L4] Yan K, et al. A fast convolution-based method for microdosimetric comparison of ²²⁵Ac, ²¹¹At, ¹⁷⁷Lu and ¹⁶¹Tb at the cell cluster scale. *Phys Med Biol*. 2025. doi:10.1088/1361-6560/ae7892
 - [L6] Tranel J, Feng FY, James SS, Hope TA. Effect of microdistribution of alpha and beta-emitters in targeted radionuclide therapies on delivered absorbed dose in a GATE model of bone marrow. *Phys Med Biol*. 2021;66(3):035016. doi:10.1088/1361-6560/abd3ef
-- [L10] Rumiantcev M, Li WB, Lindner S, et al. Estimation of relative biological effectiveness of ²²⁵Ac compared to ¹⁷⁷Lu during [²²⁵Ac]Ac-PSMA and [¹⁷⁷Lu]Lu-PSMA radiopharmaceutical therapy using TOPAS/TOPAS-nBio/MEDRAS. *EJNMMI Phys*. 2023;10:56. doi:10.1186/s40658-023-00567-2
+- [L10]（**全文確認済み**）Rumiantcev M, Li WB, Lindner S, Liubchenko G, Resch S, Bartenstein P, Ziegler SI, Böning G, Delker A. Estimation of relative biological effectiveness of ²²⁵Ac compared to ¹⁷⁷Lu during [²²⁵Ac]Ac-PSMA and [¹⁷⁷Lu]Lu-PSMA radiopharmaceutical therapy using TOPAS/TOPAS-nBio/MEDRAS. *EJNMMI Phys*. 2023;10:53. doi:10.1186/s40658-023-00567-2 — ²²⁵AcのDSB-線量関係を線形（LQでない）としてフィット。§5.6のLQ交差項の前提に影響し得る重要な知見
+- [L6]（**全文確認済み、NIHMS/PMC経由**）Tranel J, Feng FY, St. James S, Hope TA. Effect of microdistribution of alpha and beta-emitters in targeted radionuclide therapies on delivered absorbed dose in a GATE model of bone marrow. *Phys Med Biol*. 2021;66(3):035016. doi:10.1088/1361-6560/abd3ef
 - [L11]（**全文確認済み、評価を下方修正**）Chi WY. Computational Pathology and Spatial Microdosimetry Guide Radiopharmaceutical Selection for TROP2-Targeted Alpha versus Beta Radionuclide Drug Conjugates (RDCs). *bioRxiv*. 2026 Aug 25（プレプリント、査読前、単著・産業界所属）。doi:10.64898/2026.08.19.745876v1 — 方法論はGaussianカーネル近似でMonte Carlo輸送なし。学術的重みは限定的だが、²²⁵Acと¹⁷⁷Luの線量を常に同一の抗原密度マップから計算しており「完全共局在（c=1）」を無検証で前提とする実例として引用
 - [L12] Peter R, Bidkar AP, Bobba KN, et al. 3D small-scale dosimetry and tumor control of ²²⁵Ac radiopharmaceuticals for prostate cancer. *Sci Rep*. 2024;14. doi:10.1038/s41598-024-70417-3
 
