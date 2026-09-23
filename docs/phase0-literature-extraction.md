@@ -129,5 +129,10 @@ L5（Tranel 2022、**全文確認済み**）は本研究の貢献Bに最も近�
 ### 完了（全文確認済み、計12件）
 - ~~L1~~（Koniar et al. 2023）、~~L2~~（Hu et al. 2025）、~~L3~~（Ghaseminejad et al. 2025）、~~L5~~（Tranel et al. 2022）、~~L6~~（Tranel et al. 2021、NIHMS経由）、~~L7~~（Delker et al. 2023）、~~L8~~（Liubchenko et al. 2024）、~~L9~~（Wurzer et al. 2025）、~~L10~~（Rumiantcev et al. 2023）、~~L11~~（Chi 2026 bioRxiv）、~~L12~~（Peter et al. 2024）、~~L13~~（de Kruijff et al. 2019）
 
-### 未発見（要追加検索、Phase 0正式実施時の課題）
-- [P6] ²²⁵Ac 崩壊連鎖の核データ評価に関する専用文献：該当論文を未特定。ICRP Publication 107 が現状の代替根拠。
+### P6・貢献C・D の追加検索結果（2026-09-23、WebSearchのみ・全文未確認）
+
+- **[P6] 特定完了**：Huang X, et al. "Evaluation of ²²⁵Ac decay data." *Applied Radiation and Isotopes*. 2007;65(6):712–723. PubMed 17383887. ENSDF準拠の²²⁵Ac崩壊連鎖の完全な崩壊データ評価（半減期10.0±0.1日等）。**より新しい候補**として "Half-life and gamma-ray emission intensity measurements for ²²⁵Ac and progeny"（*Appl Radiat Isot*, 2025年頃、ScienceDirect ID S0969804325004877）も存在し、こちらは2025年の更新測定の可能性がある——Phase 1核データ選定時にどちらを一次ソースとするか確認が必要（全文未確認）。
+- **貢献C（時間依存放射能比`f(t)`）**：直接の競合文献は見つからなかった。²²⁵Ac/¹⁷⁷Lu併用療法に関する一般総説（例："Navigating the safety profile of Actinium-225 targeted alpha therapy"、*Clin Transl Imaging*、2025; "Targeted radioligand therapy: physics and biology..."、*Theranostics*、2024）は、逐次投与（sequential administration）戦略の存在に言及するが、半減期差・薬物動態差に起因する時間依存放射能比`f(t)`を定量的にモデル化した研究は確認できなかった。**当初評価（弱、拡張②）を維持する。**
+- **貢献D（4因子統合UQ）**：単一放射性医薬品に対する不確かさ定量化・Sobol感度解析の方法論は確立している（Gear et al. 2018 EANMガイダンス、Uncertainty Quantification in Internal Dose Calculations for Seven Selected Radiopharmaceuticals, *J Nucl Med* 2016等）が、**複数核種混合場に対する統合UQは見つからなかった**。**当初評価（非常に弱、拡張③）を維持する。**
+
+**結論**：P6は解決。貢献C・Dは、今回の追加検索によっても直接の競合文献が見つからず、当初のギャップ評価（弱い）がそのまま支持された。これにより、暫定Phase 0検索（WebSearchベースの予備調査＋12/13件の全文確認）は実質的に完了とみなす。正式なPhase 0（大学データベース経由のPRISMA-ScR準拠スコーピングレビュー）では、本表とこの追加検索結果を出発点として、検索網羅性の向上（特にP6の2つの候補文献の精読、貢献C・Dのより体系的な検索式の適用）を行う。
