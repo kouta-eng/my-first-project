@@ -281,6 +281,8 @@ $$
 
 および Manders 共局在係数を併用し、モデルパラメータ `c` と実測可能量 `ρ` の対応関係を確立する（これにより将来の顕微オートラジオグラフィ実測と接続可能になる）。
 
+**実測アンカー値（全文確認済み文献より）**：Delker et al. 2023（`docs/phase0-literature-extraction.md` L7）は、²²⁵Ac/¹⁷⁷Lu-PSMA-I&T を実際に同時投与された8患者のSUV相関を報告しており、**腎臓 `ρ = 0.94`、病変 `ρ = 0.96`**（いずれも臓器/voxelスケール、mm分解能）である。これは実臨床のPSMA同時投与療法における共局在度が「ほぼ完全だが完全には一致しない」ことを示す直接的な実測値であり、本研究のPhase 3a探索範囲（`c = 0, 0.25, 0.5, 0.75, 1.0`）に**臨床的に最も妥当な高共局在域（`c ≈ 0.9–1.0`）でのきめ細かい追加刻み**を設ける根拠とする。ただし、この`ρ`は臓器/voxelスケール（mm）での相関であり、本研究が対象とする微視的（µm）スケールでの共局在度とは分解能が異なる点に留意する必要がある——両者の関係（mmスケールでの高い`ρ`がµmスケールでも同様に高い`c`を意味するか）自体、本研究が検証すべき論点の一つである。
+
 ### 5.4 娘核種再分布のモデル化
 
 核種 `i` の娘核種が親核種位置に保持される割合を保持率 `η_i ∈ [0,1]` とし、遊離分は独立分布 `p_i^free(r)`（例：血流・間質への拡散を表す広がった分布）に従うとする。
@@ -336,6 +338,8 @@ $$
 であり、**物理線量の線形性と生物学的効果の非線形性を分離して扱う**ことが本研究の設計方針である。α線成分については微視的線量分布（specific energy `z` の単一事象分布 `f_1(z)`）に基づく MKM 的取り扱いを併用し、低線量域での効果の飽和・確率性を考慮する。
 
 **追記（Rumiantcev et al. 2023 の全文確認を受けて）**：同論文は TOPAS/TOPAS-nBio/MEDRAS による track-structure シミュレーションで、¹⁷⁷Lu の DSB数-線量関係を線形二次（LQ）、**²²⁵Ac のそれを線形（`a_Ac ≈ 0`、すなわち`β_Ac`に相当する項が実質ゼロ）としてフィットしている**（`docs/phase0-literature-extraction.md` L10）。これは高LET放射線の線量反応関係が低〜中線量域で飽和的・線形に近づくという放射線生物学の一般的知見と整合する。この知見を踏まえると、上式の交差項`2√(β_Ac β_Lu)D_Ac D_Lu`は`β_Ac→0`の極限でほぼ消失する可能性があり、**本研究のPhase 5（拡張②）では、(i) `β_Ac`を固定値とせず文献値レンジ内で不確かさとして扱う、(ii) `β_Ac≈0`とする単純化モデルとの比較を行い交差項の寄与を定量化する、という2案を検討する**。いずれにせよ、交差項の大きさそのものが実証的に未確定であるという点は、本研究のH4検証における重要な留保事項として明記する。
+
+**追記（Peter et al. 2024 の全文確認、`docs/phase0-literature-extraction.md` L12）**：独立した2件目の証拠として、Peter et al. 2024（²²⁵Ac単独、3D iQIDオートラジオグラフィによるTCP計算）も、線形二次（LQ）モデルの二次項を無視した**線形近似（`α=1.8 Gy⁻¹`、`β≈0`）**を採用している。Rumiantcev et al. 2023（L10）と合わせて**2件の独立文献が²²⁵Acの線量反応関係の線形性を支持**しており、上記の`β_Ac→0`極限での交差項再検討は、単なる理論的可能性ではなく複数の実証研究に裏付けられた妥当な仮定として扱う。
 
 ### 5.7 評価指標
 
@@ -444,11 +448,11 @@ $$
 | パラメータ | 範囲 |
 |---|---|
 | 放射能比 `f`（時間積分ベース） | 0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0 |
-| 共局在度 `c` | 0, 0.25, 0.5, 0.75, 1.0 |
+| 共局在度 `c` | 0, 0.25, 0.5, 0.7, 0.8, **0.9, 0.94, 0.96**, 1.0（**Delker et al. 2023 の実測 `ρ`=0.94/0.96（§5.3）を挟み込む高共局在域を重点的に細分化**） |
 | 抗原陰性細胞分率 | 0, 0.1, 0.3 |
 | 取り込み不均一性（対数正規 σ） | 0.2, 0.5, 1.0 |
 
-`f`・`c` の 2 軸は全格子探索（7×5 = 35 組合せ×幾何モデル）で十分網羅できる（1 ケースが安価なため LHS を必須としない）。抗原陰性細胞分率・不均一性 σ は付随的な感度解析として LHS で扱う。
+`f`・`c` の 2 軸は全格子探索（7×9 = 63 組合せ×幾何モデル）で十分網羅できる（1 ケースが安価なため LHS を必須としない）。抗原陰性細胞分率・不均一性 σ は付随的な感度解析として LHS で扱う。
 
 **3a-3. 主要出力**
 
@@ -623,12 +627,13 @@ $$
 15. Sartor O, de Bono J, Chi KN, et al. Lutetium-177–PSMA-617 for metastatic castration-resistant prostate cancer. *N Engl J Med*. 2021;385(12):1091–1103.
 16. Kratochwil C, Bruchertseifer F, Giesel FL, et al. ²²⁵Ac-PSMA-617 for PSMA-targeted α-radiation therapy of metastatic castration-resistant prostate cancer. *J Nucl Med*. 2016;57(12):1941–1944.
 
-### 11.2 Phase 0 暫定検索で確認された文献（WebSearchベース、全文未確認）
+### 11.2 Phase 0 暫定検索で確認された文献（13件中12件が全文確認済み）
 
-以下は §2.1 のプレースホルダ [P1]–[P6] に対応する文献を、暫定的な WebSearch ベースの文献検索（`docs/phase0-literature-extraction.md`、実施日2026年9月）で確認した結果である。**WebFetch（全文取得）が本セッションの環境制約でブロックされていたため、書誌情報・内容は抄録レベルの要約に基づく。正式引用の前に全文で書誌情報・数値を再確認すること。**
+以下は §2.1 のプレースホルダ [P1]–[P6] に対応する文献を、暫定的な文献検索（`docs/phase0-literature-extraction.md`、実施日2026年9月）で確認した結果である。**当初は WebFetch がブロックされ WebSearch の抄録レベル要約に依存していたが、利用者からのPDF提供により、下記13件中12件（L4を除く全て）を全文で確認済みである。** L4のみ購読制のため抄録情報で確定させている（詳細は抽出表§5参照）。
 
 - [L1]（旧P1相当、**全文確認済み**）Koniar H, Miller C, Rahmim A, Schaffer P, Uribe C. A GATE simulation study for dosimetry in cancer cell and micrometastasis from the ²²⁵Ac decay chain. *EJNMMI Phys*. 2023;10:46. doi:10.1186/s40658-023-00564-5 — ²²¹Fr/²¹³Bi保持率0–100%スイープを既に実施、貢献A(拡張①)の新規性をさらに絞り込む契機となった
-- [L7]（旧P2相当）Delker A, Schleske M, Liubchenko G, et al. Biodistribution and dosimetry for combined [¹⁷⁷Lu]Lu-PSMA-I&T/[²²⁵Ac]Ac-PSMA-I&T therapy using multi-isotope quantitative SPECT imaging. *Eur J Nucl Med Mol Imaging*. 2023;50(5):1280–1290. doi:10.1007/s00259-022-06092-1
+- [L7]（旧P2相当、**全文確認済み**）Delker A, Schleske M, Liubchenko G, Berg I, Zacherl MJ, Brendel M, Gildehaus FJ, Rumiantcev M, Resch S, Hürkamp K, Wenter V, Unterrainer LM, Bartenstein P, Ziegler SI, Beyer L, Böning G. Biodistribution and dosimetry for combined [¹⁷⁷Lu]Lu-PSMA-I&T/[²²⁵Ac]Ac-PSMA-I&T therapy using multi-isotope quantitative SPECT imaging. *Eur J Nucl Med Mol Imaging*. 2023;50(5):1280–1290. doi:10.1007/s00259-022-06092-1 — 実測`c`アンカー値（腎臓r=0.94、病変r=0.96）を提供、§5.3参照
+- [L12]（**全文確認済み**）Peter R, Bidkar AP, Bobba KN, Zerefa L, Dasari C, Meher N, Wadhwa A, Oskowitz A, Liu B, Miller BW, Vetter K, Flavell RR, Seo Y. 3D small-scale dosimetry and tumor control of ²²⁵Ac radiopharmaceuticals for prostate cancer. *Sci Rep*. 2024;14:19938. doi:10.1038/s41598-024-70417-3 — 腎臓線量の70-80%が遊離²¹³Bi由来と定量化、H3の独立支持証拠、TCPモデルで線形近似（β≈0）を採用し§5.6の再検討を補強
 - [L3]（旧P3相当、**全文確認済み**）Ghaseminejad S, De Sarno D, Bauman G, Lee TY. Framework to calculate ²²⁵Ac, ¹⁷⁷Lu, and ¹⁶¹Tb radiation dose and biological effect in metastatic castration-resistant prostate cancer treatment. *Med Phys*. 2025;52(8):e18035. doi:10.1002/mp.18035 — ²²⁵Ac連鎖を単一の実効カーネル（Whole Chain DPK）として扱うことを確認、貢献Aの段階分け設計を補強
 - [L5]（旧P4相当・ただし内容は「混合比変化」ではなく「空間分離度変化」、**全文確認済み**）Tranel J, Palm S, Graves SA, Feng FY, Hope TA. Impact of radiopharmaceutical therapy (¹⁷⁷Lu, ²²⁵Ac) microdistribution in a cancer-associated fibroblasts model. *EJNMMI Phys*. 2022;9:67. doi:10.1186/s40658-022-00497-5
 - [L8][L9]（旧P5相当、**全文確認済み**）Liubchenko G, Böning G, Zacherl M, Rumiantcev M, Unterrainer LM, Gildehaus FJ, Brendel M, Resch S, Bartenstein P, Ziegler SI, Delker A. Image-based dosimetry for [²²⁵Ac]Ac-PSMA-I&T therapy and the effect of daughter-specific pharmacokinetics. *Eur J Nucl Med Mol Imaging*. 2024;51:2504–2514. doi:10.1007/s00259-024-06681-2 — 臓器スケールでは娘核種別PKの厳密分離による線量差は8%以内（L1の細胞スケール最大72%との対比が本研究の核心的動機を裏付ける）／Wurzer A, Sun B, Saleh S, et al. [²²⁵Ac]Ac-PSMA I&T: A Preclinical Investigation on the Fate of Decay Nuclides and Their Influence on Dosimetry of Salivary Glands and Kidneys. *J Nucl Med*. 2025;66(12):1964–1969. doi:10.2967/jnumed.125.269744
@@ -637,12 +642,10 @@ $$
 **追加で確認された、当初プレースホルダに無かった重要文献**（詳細は抽出表参照）：
 
 - [L2]（**全文確認済み**）Hu Z, Qu S, Liu H, Zhang Y, Yan S, Hu A, Qiu R, Wu Z, Zhang H, Li J. Evaluation of relative biological effectiveness of ²²⁵Ac and its decay daughters with Monte Carlo track structure simulations. *EJNMMI Phys*. 2025;12:65. doi:10.1186/s40658-025-00765-0 — 貢献Aの新規性の幅を直接左右する最重要文献。6空間分布は離散カテゴリと確定（詳細は抽出表）
-- [L4] Yan K, et al. A fast convolution-based method for microdosimetric comparison of ²²⁵Ac, ²¹¹At, ¹⁷⁷Lu and ¹⁶¹Tb at the cell cluster scale. *Phys Med Biol*. 2025. doi:10.1088/1361-6560/ae7892
-- [L6] Tranel J, Feng FY, James SS, Hope TA. Effect of microdistribution of alpha and beta-emitters in targeted radionuclide therapies on delivered absorbed dose in a GATE model of bone marrow. *Phys Med Biol*. 2021;66(3):035016. doi:10.1088/1361-6560/abd3ef
-- [L10]（**全文確認済み**）Rumiantcev M, Li WB, Lindner S, Liubchenko G, Resch S, Bartenstein P, Ziegler SI, Böning G, Delker A. Estimation of relative biological effectiveness of ²²⁵Ac compared to ¹⁷⁷Lu during [²²⁵Ac]Ac-PSMA and [¹⁷⁷Lu]Lu-PSMA radiopharmaceutical therapy using TOPAS/TOPAS-nBio/MEDRAS. *EJNMMI Phys*. 2023;10:53. doi:10.1186/s40658-023-00567-2 — ²²⁵AcのDSB-線量関係を線形（LQでない）としてフィット。§5.6のLQ交差項の前提に影響し得る重要な知見
+- [L4]（**未達、抄録情報で確定**）Yan K, Jiang Y, Wang R, et al. A fast convolution-based method for microdosimetric comparison of ²²⁵Ac, ²¹¹At, ¹⁷⁷Lu and ¹⁶¹Tb at the cell cluster scale. *Phys Med Biol*. 2026;71:125005. doi:10.1088/1361-6560/ae7892
 - [L6]（**全文確認済み、NIHMS/PMC経由**）Tranel J, Feng FY, St. James S, Hope TA. Effect of microdistribution of alpha and beta-emitters in targeted radionuclide therapies on delivered absorbed dose in a GATE model of bone marrow. *Phys Med Biol*. 2021;66(3):035016. doi:10.1088/1361-6560/abd3ef
+- [L10]（**全文確認済み**）Rumiantcev M, Li WB, Lindner S, Liubchenko G, Resch S, Bartenstein P, Ziegler SI, Böning G, Delker A. Estimation of relative biological effectiveness of ²²⁵Ac compared to ¹⁷⁷Lu during [²²⁵Ac]Ac-PSMA and [¹⁷⁷Lu]Lu-PSMA radiopharmaceutical therapy using TOPAS/TOPAS-nBio/MEDRAS. *EJNMMI Phys*. 2023;10:53. doi:10.1186/s40658-023-00567-2 — ²²⁵AcのDSB-線量関係を線形（LQでない）としてフィット。§5.6のLQ交差項の前提に影響し得る重要な知見
 - [L11]（**全文確認済み、評価を下方修正**）Chi WY. Computational Pathology and Spatial Microdosimetry Guide Radiopharmaceutical Selection for TROP2-Targeted Alpha versus Beta Radionuclide Drug Conjugates (RDCs). *bioRxiv*. 2026 Aug 25（プレプリント、査読前、単著・産業界所属）。doi:10.64898/2026.08.19.745876v1 — 方法論はGaussianカーネル近似でMonte Carlo輸送なし。学術的重みは限定的だが、²²⁵Acと¹⁷⁷Luの線量を常に同一の抗原密度マップから計算しており「完全共局在（c=1）」を無検証で前提とする実例として引用
-- [L12] Peter R, Bidkar AP, Bobba KN, et al. 3D small-scale dosimetry and tumor control of ²²⁵Ac radiopharmaceuticals for prostate cancer. *Sci Rep*. 2024;14. doi:10.1038/s41598-024-70417-3
 
 ---
 
